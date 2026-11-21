@@ -84,7 +84,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-zinc-200 py-4 text-center text-sm text-zinc-500 dark:border-zinc-800">
-        © {new Date().getFullYear()} SalonBook. All rights reserved.
+        © 2026 SalonBook. All rights reserved.
       </div>
     </footer>
   );
