@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession, signOut, dashboardPathForRole } from "@/lib/auth-client";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -10,6 +12,19 @@ const navLinks = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
+  const user = session?.user as
+    | { name?: string; role?: string }
+    | undefined;
+  const dashboardHref = dashboardPathForRole(user?.role);
+
+  async function handleLogout() {
+    await signOut();
+    setOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur dark:border-zinc-800 dark:bg-black/90">
@@ -28,18 +43,41 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link
-            href="/sign-in"
-            className="text-sm font-medium text-zinc-700 hover:text-amber-700 dark:text-zinc-300"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/sign-up"
-            className="rounded-full bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
-          >
-            Sign Up
-          </Link>
+          {!isPending && user ? (
+            <>
+              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                {user.name}
+              </span>
+              <Link
+                href={dashboardHref}
+                className="text-sm font-medium text-zinc-700 hover:text-amber-700 dark:text-zinc-300"
+              >
+                Dashboard
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-full bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-sm font-medium text-zinc-700 hover:text-amber-700 dark:text-zinc-300"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/sign-up"
+                className="rounded-full bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -66,20 +104,44 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/sign-in"
-              onClick={() => setOpen(false)}
-              className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/sign-up"
-              onClick={() => setOpen(false)}
-              className="text-sm font-medium text-amber-700"
-            >
-              Sign Up
-            </Link>
+            {!isPending && user ? (
+              <>
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  {user.name}
+                </span>
+                <Link
+                  href={dashboardHref}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-left text-sm font-medium text-amber-700"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-amber-700"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
