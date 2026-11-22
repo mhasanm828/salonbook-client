@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { fetchService, type Service } from "@/lib/services";
 import { bookAppointment, TIME_SLOTS } from "@/lib/appointments";
+import toast from "react-hot-toast";
 
 export default function ServiceDetailsClient({ id }: { id: string }) {
   const router = useRouter();
@@ -65,11 +66,12 @@ export default function ServiceDetailsClient({ id }: { id: string }) {
       setSuccess(
         "Appointment request submitted. Track its status from your dashboard."
       );
+      toast.success("Appointment request submitted!");
       setTimeout(() => router.push("/dashboard/customer/appointments"), 1200);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to submit appointment."
-      );
+      const msg = err instanceof Error ? err.message : "Failed to submit appointment.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }

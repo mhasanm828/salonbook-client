@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchAdminUsers, setUserBlocked, type AdminUser } from "@/lib/admin";
+import toast from "react-hot-toast";
 
 export default function ManageUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -31,6 +32,7 @@ export default function ManageUsersPage() {
     setError("");
     try {
       await setUserBlocked(user.id, !user.isBlocked);
+      toast.success(user.isBlocked ? "User unblocked." : "User blocked.");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update user.");

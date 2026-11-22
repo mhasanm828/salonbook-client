@@ -8,6 +8,7 @@ import {
   type Appointment,
 } from "@/lib/appointments";
 import { StatusBadge } from "@/components/StatusBadge";
+import toast from "react-hot-toast";
 
 export default function ManageAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -42,6 +43,7 @@ export default function ManageAppointmentsPage() {
     try {
       if (action === "confirm") await confirmAppointment(id);
       else await cancelAppointment(id);
+      toast.success(action === "confirm" ? "Appointment confirmed." : "Appointment cancelled.");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Action failed.");

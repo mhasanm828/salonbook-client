@@ -10,6 +10,7 @@ import {
   type Appointment,
 } from "@/lib/appointments";
 import { StatusBadge } from "@/components/StatusBadge";
+import toast from "react-hot-toast";
 
 export default function MyAppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -40,7 +41,9 @@ export default function MyAppointmentsPage() {
       const { url } = await startCheckout(id);
       if (url) window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to start payment.");
+      const msg = err instanceof Error ? err.message : "Failed to start payment.";
+      setError(msg);
+      toast.error(msg);
       setActionId("");
     }
   }
@@ -50,6 +53,7 @@ export default function MyAppointmentsPage() {
     setActionId(id);
     try {
       await cancelAppointment(id);
+      toast.success("Appointment cancelled.");
       await load();
     } catch (err) {
       setError(

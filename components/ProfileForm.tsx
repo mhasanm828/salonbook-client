@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchProfile, updateProfile, uploadToImgBB } from "@/lib/profile";
+import toast from "react-hot-toast";
 
 export default function ProfileForm() {
   const [name, setName] = useState("");
@@ -52,6 +53,7 @@ export default function ProfileForm() {
     try {
       await updateProfile({ name, image, phone });
       setSuccess("Profile updated successfully.");
+      toast.success("Profile updated successfully.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update profile.");
     } finally {

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { SERVICE_CATEGORIES, type Service } from "@/lib/services";
 import { createService, updateService } from "@/lib/admin";
 import { uploadToImgBB } from "@/lib/profile";
+import toast from "react-hot-toast";
 
 export default function ServiceForm({ initial }: { initial?: Service }) {
   const router = useRouter();
@@ -77,9 +78,11 @@ export default function ServiceForm({ initial }: { initial?: Service }) {
       if (initial) {
         await updateService(initial._id, payload);
         setSuccess("Service updated successfully.");
+        toast.success("Service updated successfully.");
       } else {
         await createService(payload);
         setSuccess("Service created successfully.");
+        toast.success("Service created successfully.");
       }
       setTimeout(() => router.push("/dashboard/admin/services"), 800);
     } catch (err) {

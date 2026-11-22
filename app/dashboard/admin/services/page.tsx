@@ -10,6 +10,7 @@ import {
   setServiceStatus,
 } from "@/lib/admin";
 import { StatusBadge } from "@/components/StatusBadge";
+import toast from "react-hot-toast";
 
 export default function ManageServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -53,6 +54,7 @@ export default function ManageServicesPage() {
     setActionId(service._id);
     try {
       await deleteService(service._id);
+      toast.success("Service deleted.");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete service.");
