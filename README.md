@@ -42,6 +42,21 @@ npm start       # run production build
 
 The server (salonbook-server) must be running for API data.
 
+## Pages & Routes
+
+- `/` — Home: banner, featured services, categories, how it works
+- `/services` — Browse services with search, category filter, price sort
+- `/services/[id]` — Service details + booking form (login required)
+- `/sign-up`, `/sign-in` — email/password + Google; password needs 6+
+  characters with uppercase and lowercase
+- `/dashboard/customer` — overview, my appointments (cancel / pay), profile
+- `/dashboard/admin` — overview, manage services, add/edit service,
+  manage appointments, manage users (block/unblock), transactions, profile
+- `/payment/success`, `/payment/cancel` — Stripe return pages
+
+Admin accounts are never created from public registration; an existing
+account is promoted from the server with `npm run make-admin`.
+
 ## Required Environment Variables
 
 Names only — never commit actual secret values.
