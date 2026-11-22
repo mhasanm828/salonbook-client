@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ServiceCard from "@/components/ServiceCard";
 import {
   fetchServices,
@@ -9,10 +10,13 @@ import {
   type ServiceQuery,
 } from "@/lib/services";
 
-export default function BrowseServicesPage() {
+function BrowseServicesContent() {
+  const searchParams = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(
+    searchParams.get("category") || ""
+  );
   const [sort, setSort] = useState<ServiceQuery["sort"]>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -113,5 +117,21 @@ export default function BrowseServicesPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function BrowseServicesPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
+          <p className="text-center text-sm text-zinc-500">
+            Loading services...
+          </p>
+        </main>
+      }
+    >
+      <BrowseServicesContent />
+    </Suspense>
   );
 }
