@@ -31,8 +31,22 @@ export default function ManageServicesPage() {
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    fetchAllServicesAdmin()
+      .then((data) => {
+        if (!cancelled) setServices(data);
+      })
+      .catch(() => {
+        if (!cancelled)
+          setError("Could not load services. Please try again later.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleToggle(service: Service) {
     setActionId(service._id);

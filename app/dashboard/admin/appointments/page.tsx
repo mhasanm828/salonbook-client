@@ -29,8 +29,22 @@ export default function ManageAppointmentsPage() {
   }, []);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    fetchAllAppointments()
+      .then((data) => {
+        if (!cancelled) setAppointments(data);
+      })
+      .catch(() => {
+        if (!cancelled)
+          setError("Could not load appointments. Please try again later.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function runAction(id: string, action: "confirm" | "cancel") {
     if (
