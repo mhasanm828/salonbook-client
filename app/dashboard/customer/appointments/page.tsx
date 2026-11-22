@@ -6,6 +6,7 @@ import {
   cancelAppointment,
   fetchMyAppointments,
   serviceOf,
+  startCheckout,
   type Appointment,
 } from "@/lib/appointments";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -31,6 +32,18 @@ export default function MyAppointmentsPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  async function handlePay(id: string) {
+    setActionId(id);
+    setError("");
+    try {
+      const { url } = await startCheckout(id);
+      if (url) window.location.href = url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to start payment.");
+      setActionId("");
+    }
+  }
 
   async function handleCancel(id: string) {
     if (!window.confirm("Cancel this appointment request?")) return;
@@ -115,6 +128,19 @@ export default function MyAppointmentsPage() {
                       : "Cancel Request"}
                   </button>
                 )}
+                {appointment.status === "confirmed" &&
+                  appointment.paymentStatus === "unpaid" && (
+                    <button
+                      type="button"
+                      onClick={() => handlePay(appointment._id)}
+                      disabled={actionId === appointment._id}
+                      className="mt-3 rounded-full bg-amber-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-800 disabled:opacity-60"
+                    >
+                      {actionId === appointment._id
+                        ? "Redirecting to Stripe..."
+                        : "Pay Now"}
+                    </button>
+                  )}
               </div>
             </article>
           );
