@@ -68,6 +68,7 @@ Names only — never commit actual secret values.
 
 ## Links
 
-- Live Website: _to be added after deployment_
+- Live Website: https://salonbook-client-sigma.vercel.app
+- Live API: https://salonbook-server-nu.vercel.app
 - Client Repository: this repository
 - Server Repository: _to be added_
